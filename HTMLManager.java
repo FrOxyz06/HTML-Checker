@@ -4,15 +4,21 @@ public class HTMLManager {
   private Queue<HTMLTag> tags;
   
 public HTMLManager(Queue<HTMLTag> html){
-   Queue<HTMLTag> code = new LinkedList<>();
+   Queue<HTMLTag> tags = new LinkedList<>();
    if(html.size() == 0){
       throw new IllegalArgumentException();
    }
    
    while(!html.isEmpty()){
-      code.add(html.remove());
+     tags.add(html.remove());
    }
 }
+
+public Queue<HTMLTag> getTags() {
+    return tags;
+}
+
+
 
 
 

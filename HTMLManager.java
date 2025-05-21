@@ -4,7 +4,7 @@ public class HTMLManager {
   private Queue<HTMLTag> tags;
   
 public HTMLManager(Queue<HTMLTag> html){
-   Queue<HTMLTag> tags = new LinkedList<>();
+   tags = new LinkedList<>();
    if(html.size() == 0){
       throw new IllegalArgumentException();
    }
@@ -28,11 +28,44 @@ public String toString() {
    // making a string of all the tags and adding back in tags
     while(!temp.isEmpty()){
         code += temp.element() + " ";
+        code = code.trim();
         tags.add(temp.remove());
     }
-    return code.trim();
+    return code;
 }
 
+public void fixHTML() {
+    Stack<HTMLTag> stack = new Stack<>();
+    Queue<HTMLTag> temp = new LinkedList<>();
+    Queue<HTMLTag> fix = new LinkedList<>();
+    //putting the tags in temp
+    while (!tags.isEmpty()) {
+        temp.add(tags.remove());
+    }
+   // checking every element in temp
+    while (!temp.isEmpty()) {
+        HTMLTag tag = temp.remove();
+         
+        if (tag.isSelfClosing()) {
+            fix.add(tag);
+        } else if (tag.isOpening()) {
+            stack.push(tag);
+            fix.add(tag);
+        } else if (tag.isClosing()) {// if the tag is a closing tag we check if the last opening tag matches it and we add it to the fix queue
+            if (!stack.isEmpty() && tag.matches(stack.peek())) {
+                fix.add(tag);
+                stack.pop();
 
+            }
+         }
+    }
 
+    while (!stack.isEmpty()) {// we check if the stack still contains any opening tags if it does we add it's match in the fix queue
+        fix.add(stack.pop().getMatching());
+    }
+    tags = fix;
 }
+
+   
+}
+
